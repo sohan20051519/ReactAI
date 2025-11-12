@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReactAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+      :root {
+        --radius-xl: 1.5rem; /* 24px */
+        --radius-lg: 1rem;   /* 16px */
+        --radius-md: 0.75rem; /* 12px */
+      }
+
+      [data-theme="light"] {
+        --bg: var(--bg-light);
+        --surface: var(--surface-light);
+        --text-primary: var(--text-primary-light);
+        --text-secondary: var(--text-secondary-light);
+        --shadow-color: var(--shadow-color-light);
+        --highlight-color: var(--highlight-color-light);
+        --shadow-neumorphic: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--highlight-color-light);
+        --shadow-neumorphic-inset: inset 4px 4px 8px var(--shadow-color), inset -4px -4px 8px var(--highlight-color-light);
+      }
+
+      [data-theme="dark"] {
+        --bg: var(--bg-dark);
+        --surface: var(--surface-dark);
+        --text-primary: var(--text-primary-dark);
+        --text-secondary: var(--text-secondary-dark);
+        --shadow-color: var(--shadow-color-dark);
+        --highlight-color: var(--highlight-color-dark);
+        --shadow-neumorphic: 10px 10px 20px var(--shadow-color), -10px -10px 20px var(--highlight-color);
+        --shadow-neumorphic-inset: inset 5px 5px 10px var(--shadow-color), inset -5px -5px 10px var(--highlight-color);
+      }
+      
+      body {
+        /* font-family will be set by JS */
+        color: var(--text-primary);
+        background-color: var(--bg);
+        overflow: hidden;
+        transition: background-color 0.5s ease;
+      }
+
+      /* Aurora Background */
+      #aurora-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .aurora-blur {
+        filter: blur(100px);
+        position: absolute;
+        inset: 0;
+      }
+
+      .aurora-shape-1, .aurora-shape-2, .aurora-shape-3 {
+        position: absolute;
+        border-radius: 9999px;
+        opacity: 0.5;
+        animation: aurora-flow 20s linear infinite alternate;
+      }
+      .aurora-shape-1 { background-color: var(--accent-start); width: 40vw; height: 40vw; top: 10%; left: 10%; }
+      .aurora-shape-2 { background-color: var(--accent-end); width: 30vw; height: 30vw; top: 40%; left: 60%; animation-delay: 5s; }
+      .aurora-shape-3 { background-color: #3b82f6; width: 35vw; height: 35vw; top: 60%; left: 20%; animation-delay: 10s; }
+
+      @keyframes aurora-flow {
+        0% { transform: translate(0%, 0%) scale(1); }
+        50% { transform: translate(20%, -20%) scale(1.2); }
+        100% { transform: translate(-20%, 20%) scale(0.9); }
+      }
+
+      #cursor-glow {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(126, 63, 242, 0.15) 0%, transparent 60%);
+        border-radius: 9999px;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: top 0.2s ease-out, left 0.2s ease-out;
+        z-index: 0;
+      }
+
+      /* Glass Effect */
+      .glass-panel {
+        background-color: var(--surface);
+        backdrop-filter: blur(24px);
+        border: 1px solid var(--highlight-color);
+      }
+
+      /* Scrollbar styles */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb {
+        background: var(--surface);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+      ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+      /* Markdown Content Styles */
+      .markdown-content > *:first-child { margin-top: 0; }
+      .markdown-content > *:last-child { margin-bottom: 0; }
+      .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+          font-weight: 700;
+          margin-bottom: 0.5em;
+          margin-top: 1em;
+      }
+      .markdown-content h1 { font-size: 1.5em; }
+      .markdown-content h2 { font-size: 1.25em; }
+      .markdown-content h3 { font-size: 1.1em; }
+      .markdown-content p {
+          margin-bottom: 0.75em;
+          line-height: 1.6;
+      }
+      .markdown-content ul, .markdown-content ol {
+          padding-left: 1.5em;
+          margin-bottom: 1em;
+          list-style-position: outside;
+      }
+      .markdown-content ul { list-style-type: disc; }
+      .markdown-content ol { list-style-type: decimal; }
+      .markdown-content li { margin-bottom: 0.25em; }
+      .markdown-content code:not(pre > code) {
+          background-color: var(--highlight-color);
+          padding: 0.2em 0.4em;
+          margin: 0;
+          font-size: 85%;
+          border-radius: 6px;
+      }
+      .markdown-content pre {
+          padding: 1em;
+          margin: 1em 0;
+          overflow: auto;
+          border-radius: var(--radius-md);
+          background-color: var(--highlight-color);
+      }
+      .markdown-content pre code {
+          background-color: transparent;
+          padding: 0;
+          font-size: inherit;
+          color: inherit;
+      }
+      .markdown-content a {
+          color: var(--accent-start);
+          text-decoration: none;
+          font-weight: 500;
+      }
+      .markdown-content a:hover { text-decoration: underline; }
+      .markdown-content strong { font-weight: 700; }
+      .markdown-content blockquote {
+        border-left: 4px solid var(--accent-end);
+        padding-left: 1em;
+        margin-left: 0;
+        color: var(--text-secondary);
+      }
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.553.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react-markdown": "https://aistudiocdn.com/react-markdown@^9.0.1",
+    "remark-gfm": "https://aistudiocdn.com/remark-gfm@^4.0.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
