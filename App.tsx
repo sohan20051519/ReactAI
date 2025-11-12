@@ -12,7 +12,7 @@ import { streamMultiModalResponse, generateImage, executeCode, extractTextFromIm
 import { config } from './config';
 
 const App: React.FC = () => {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
